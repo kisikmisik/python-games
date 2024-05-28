@@ -2,7 +2,7 @@ from random import shuffle
 import os, time
 
 suits = ["♦", "♣", "♠", "♥"]
-nominals = {"    2": 2, "    3": 3, "    4": 4, "    5": 5, "    6": 6, "    7": 7, "    8": 8, "    9": 9, "   10": 10, " Jack": 10, "Queen": 10, "  King": 10, "  Ace": 11}
+nominals = {"  King": 10, "  Ace": 11}
 game_on = True
 clear = lambda: os.system('cls')
 
@@ -87,7 +87,9 @@ class Player:
 def display_game_table (hide_last_dealer_card = False):
     clear()
     dealer.display_player_cards(hide_last_dealer_card)
-    print('-------------------------------------------------------')
+    print('                        ')
+    print('                        ')
+    print('                        ')
     player.display_player_cards()
 player = Player(input('Welcome to the Black Jack! Enter your name: '))
 
@@ -122,8 +124,22 @@ while game_on:
     dealer.hit_another_card()
     player.hit_another_card()
     player.hit_another_card()
-
     display_game_table(True)
+    if player.current_points == 21:
+        print(f'BLACK JACK! You won {player.current_bet * 2}!')
+        player.update_money(player.current_bet * 2)
+        time.sleep(3)
+        break
+    elif player.current_points > 21:
+        for card in player.current_cards:
+            if card.value == 11:
+                card.change_ace_value()
+                player.count_player_points()
+                display_game_table(True)
+        if player.current_points > 21:
+            print(f'How sad, you Busted :( You lost your bet of {player.current_bet}..')
+            time.sleep(3)
+            break
     player_decision = input('Stand or hit? (s / h): ')
 
     while player_decision != 's':
@@ -180,10 +196,10 @@ while game_on:
                 time.sleep(3)
                 player.update_money(player.current_bet * 2)
         elif dealer.current_points > player.current_points:
-            print(f'Dealer has {dealer.current_points} points and {player.name} has {player.current_points} points.. Dealer won, you lost your bet.')
+            print(f'Dealer has {dealer.current_points} points and {player.name} has {player.current_points} points.. Dealer won, you lost {player.current_bet}.')
             time.sleep(3)
         elif dealer.current_points < player.current_points:
-            print(f'Dealer has {dealer.current_points} points and {player.name} has {player.current_points} points.. {player.name} won, congrats!')
+            print(f'Dealer has {dealer.current_points} points and {player.name} has {player.current_points} points.. {player.name} won {player.current_bet * 2}, congrats!')
             player.update_money(player.current_bet * 2)
             time.sleep(3)
         elif dealer.current_points == player.current_points:
