@@ -56,29 +56,39 @@ class Player:
         self.current_points = 0
         for card in self.current_cards:
             self.current_points += card.value
-        self.display_player_cards()
 
-    def display_player_cards (self):
-        clear()
+    def display_player_cards (self, is_last_card_hidden = False):
         print(f"{self.name}'s points: {self.current_points}")
         print(f"{self.name}'s cards:")
         
         rows_to_print = ['', '', '', '', '', '', '']
         for card in self.current_cards:
-            rows_to_print[0] += '----------  '
+            rows_to_print[0] += ' --------   '
             rows_to_print[1] += '|        |  '
             rows_to_print[2] += '|        |  '
             rows_to_print[3] += f' {card}    '
             rows_to_print[4] += '|        |  '
             rows_to_print[5] += '|        |  '
-            rows_to_print[6] += '----------  '
+            rows_to_print[6] += ' --------   '
+        if is_last_card_hidden:
+            rows_to_print[0] += ' --------   '
+            rows_to_print[1] += '|--------|  '
+            rows_to_print[2] += '|--------|  '
+            rows_to_print[3] += '|-HIDDEN-|  '
+            rows_to_print[4] += '|--------|  '
+            rows_to_print[5] += '|--------|  '
+            rows_to_print[6] += ' --------   '
         for row in rows_to_print:
             print(row)
 
     def reset_cards (self):
         self.current_cards = []
         self.current_points = 0
-
+def display_game_table (hide_last_dealer_card = False):
+    clear()
+    dealer.display_player_cards(hide_last_dealer_card)
+    print('-------------------------------------------------------')
+    player.display_player_cards()
 player = Player(input('Welcome to the Black Jack! Enter your name: '))
 
 while True: 
@@ -108,18 +118,22 @@ while game_on:
         else:
             break
     time.sleep(3)
+    dealer = Player('Dealer')
+    dealer.hit_another_card()
     player.hit_another_card()
-    time.sleep(2)
     player.hit_another_card()
 
+    display_game_table(True)
     player_decision = input('Stand or hit? (s / h): ')
 
     while player_decision != 's':
         if player_decision == 'h':
             player.hit_another_card()
+            display_game_table(True)
             if player.current_points == 21:
                 print(f'Wow! You won {player.current_bet * 2}!')
                 player.update_money(player.current_bet * 2)
+                time.sleep(3)
                 break
                 
             if player.current_points > 21:
@@ -127,8 +141,10 @@ while game_on:
                     if card.value == 11:
                         card.change_ace_value()
                         player.count_player_points()
+                        display_game_table(True)
                 if player.current_points > 21:
-                    print(f'How sad :( You lost your bet of {player.current_bet}')
+                    print(f'How sad, you Busted :( You lost your bet of {player.current_bet}..')
+                    time.sleep(3)
                     break
             player_decision = input('Stand or hit? (s / h): ')
 
@@ -138,16 +154,17 @@ while game_on:
     if player_decision == 's':
         print(f'Got it. You decided to stay with {player.current_points} points. Its dealers turn..')
         time.sleep(3)
-        dealer = Player('Dealer')
-        print('Dealer deals 2 cards..')
+        # dealer = Player('Dealer')
+        print('Dealer deals next card..')
         time.sleep(2)
         dealer.hit_another_card()
-        dealer.hit_another_card()
+        display_game_table()
         time.sleep(3)
         while True: 
             if dealer.current_points >= 17:
                 break
             dealer.hit_another_card()
+            display_game_table()
             time.sleep(3)
            
         if dealer.current_points == 21:
