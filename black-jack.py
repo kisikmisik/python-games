@@ -87,6 +87,8 @@ while True:
         print('You must select number using 0-9')
     else:
         break
+
+    
 while game_on:
     if player.balance == 0:
         print('You do not have money :( Come back when you will have some more')
@@ -107,22 +109,28 @@ while game_on:
     player.hit_another_card()
 
     player_decision = input('Stand or hit? (s / h): ')
-    while player_decision == 'h':
-        player.hit_another_card()
-        if player.current_points == 21:
-            print(f'Wow! You won {player.current_bet * 2}!')
-            player.update_money(player.current_bet * 2)
-            break
-            
-        if player.current_points > 21:
-            for card in player.current_cards:
-                if card.value == 11:
-                    card.change_ace_value()
-                    player.count_player_points()
-            if player.current_points > 21:
-                print(f'How sad :( You lost your bet of {player.current_bet}')
+
+    while player_decision != 's':
+        if player_decision == 'h':
+            player.hit_another_card()
+            if player.current_points == 21:
+                print(f'Wow! You won {player.current_bet * 2}!')
+                player.update_money(player.current_bet * 2)
                 break
-        player_decision = input('Stand or hit? (s / h): ')
+                
+            if player.current_points > 21:
+                for card in player.current_cards:
+                    if card.value == 11:
+                        card.change_ace_value()
+                        player.count_player_points()
+                if player.current_points > 21:
+                    print(f'How sad :( You lost your bet of {player.current_bet}')
+                    break
+            player_decision = input('Stand or hit? (s / h): ')
+
+        if player_decision not in ['s', 'h']:
+            print('You must enter either "s" or "h"')
+            player_decision = input('Stand or hit? (s / h): ')
     if player_decision == 's':
         print(f'Got it. You decided to stay with {player.current_points} points. Its dealers turn..')
         time.sleep(3)
