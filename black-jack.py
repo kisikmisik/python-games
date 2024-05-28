@@ -38,6 +38,7 @@ class Player:
     def place_bet(self, amount):
         if self.balance < amount:
             print(f'Your balance is too low! Current balance - {self.balance}')
+            raise Exception()
         else:     
             self.current_bet = amount
             self.balance -= amount
@@ -88,7 +89,7 @@ while True:
     else:
         break
 
-    
+
 while game_on:
     if player.balance == 0:
         print('You do not have money :( Come back when you will have some more')
