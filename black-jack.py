@@ -2,7 +2,7 @@ from random import shuffle
 import os, time
 
 suits = ["♦", "♣", "♠", "♥"]
-nominals = {"  King": 10, "  Ace": 11}
+nominals = {"    2": 2, "    3": 3, "    4": 4, "    5": 5, "    6": 6, "    7": 7, "    8": 8, "    9": 9, "   10": 10, " Jack": 10, "Queen": 10,"  King": 10, "  Ace": 11}
 game_on = True
 clear = lambda: os.system('cls')
 
@@ -44,8 +44,9 @@ class Player:
             self.balance -= amount
             print('Bets placed, dealing cards..')
 
-    def update_money(self, amount):
+    def update_money(self, amount, wait_time = 3):
         self.balance += amount
+        time.sleep(wait_time)
 
     def hit_another_card (self):
         new_player_card = deck.all_cards.pop(0)
@@ -95,7 +96,7 @@ player = Player(input('Welcome to the Black Jack! Enter your name: '))
 
 while True: 
     try:
-        player.update_money(int(input("Enter your initial balance: ")))
+        player.update_money(int(input("Enter your initial balance: ")), 0)
     except:
         print('You must select number using 0-9')
     else:
@@ -128,7 +129,6 @@ while game_on:
     if player.current_points == 21:
         print(f'BLACK JACK! You won {player.current_bet * 2}!')
         player.update_money(player.current_bet * 2)
-        time.sleep(3)
         break
     elif player.current_points > 21:
         for card in player.current_cards:
@@ -149,7 +149,6 @@ while game_on:
             if player.current_points == 21:
                 print(f'Wow! You won {player.current_bet * 2}!')
                 player.update_money(player.current_bet * 2)
-                time.sleep(3)
                 break
                 
             if player.current_points > 21:
@@ -170,7 +169,6 @@ while game_on:
     if player_decision == 's':
         print(f'Got it. You decided to stay with {player.current_points} points. Its dealers turn..')
         time.sleep(3)
-        # dealer = Player('Dealer')
         print('Dealer deals next card..')
         time.sleep(2)
         dealer.hit_another_card()
@@ -193,7 +191,6 @@ while game_on:
                     dealer.count_player_points()
             if dealer.current_points > 21:
                 print(f'Wow! Dealer is Busted! {player.name} won {player.current_bet * 2}!')
-                time.sleep(3)
                 player.update_money(player.current_bet * 2)
         elif dealer.current_points > player.current_points:
             print(f'Dealer has {dealer.current_points} points and {player.name} has {player.current_points} points.. Dealer won, you lost {player.current_bet}.')
@@ -201,8 +198,6 @@ while game_on:
         elif dealer.current_points < player.current_points:
             print(f'Dealer has {dealer.current_points} points and {player.name} has {player.current_points} points.. {player.name} won {player.current_bet * 2}, congrats!')
             player.update_money(player.current_bet * 2)
-            time.sleep(3)
         elif dealer.current_points == player.current_points:
             print(f'It is a draw! Your bet is returning to you..')
             player.update_money(player.current_bet)
-            time.sleep(3)
